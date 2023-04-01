@@ -1,4 +1,10 @@
 import express from "express";
+import db from "./config/dbConnect.js";
+
+db.on('error', console.log.bind(console, 'Erro de conexão'))
+db.once('open', () => {
+    console.log('Conexão com banco feita com sucesso')
+})
 
 const app = express();
 
@@ -37,10 +43,9 @@ app.put('/livros/:id', (req, res) => {
     const index = livros?.findIndex((livro) => {
         return livro?.id === Number(id)
     })
-    const oldLivro = livros[index]?.titulo;
-    const updatedLivro ={ id: Number(id), titulo }
-    livros[index] = updatedLivro
-    res.status(200).send({ message: `O livro ${oldLivro} foi alterado para ${updatedLivro?.titulo} com sucesso.` })
+    const lastTitulo = livros[index]?.titulo;
+    livros[index].titulo = titulo;
+    res.status(200).send({ message: `O livro ${lastTitulo} foi alterado para ${titulo} com sucesso.` })
 })
 
 app.delete('/livros/:id', (req, res) => {
