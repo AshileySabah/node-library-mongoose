@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-mongoose.connect('mongodb+srv://alura:alura123@alura.hibadzs.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(process.env.STRING_CONEXAO_DB);
 
-let db = mongoose.connection
+let db = mongoose.connection;
 
 export default db;
