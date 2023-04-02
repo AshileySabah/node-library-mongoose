@@ -4,7 +4,10 @@ import NaoEncontrado from "../erros/NaoEncontrado.js";
 class LivroController {
   static getAllLivros = async (req, res, next) => {
     try{
-      const livrosResultado = await livros.find().populate("autor").exec();
+      const { page = 1, size = 5 } = req.query;
+      const livrosResultado = await livros.find()
+        .skip((page - 1) * size).limit(size)
+        .populate("autor").exec();
       res.status(200).json(livrosResultado);
     }catch(erro){
       next(erro);
