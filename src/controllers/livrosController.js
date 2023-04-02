@@ -1,4 +1,4 @@
-import { livros } from "../models/index.js";
+import { autores, livros } from "../models/index.js";
 import NaoEncontrado from "../erros/NaoEncontrado.js";
 
 class LivroController {
@@ -65,7 +65,7 @@ class LivroController {
 
   static getLivrosByFilter = async (req, res, next) => {
     try{
-      const { editora, titulo, minPaginas, maxPaginas } = req.query;
+      const { editora, titulo, minPaginas, maxPaginas, autor } = req.query;
       const filtro = {};
 
       if(editora) filtro.editora = { $regex: editora, $options: "i" };
@@ -73,7 +73,12 @@ class LivroController {
       if(minPaginas) filtro.numeroPaginas = { $gte: minPaginas };
       if(maxPaginas) filtro.numeroPaginas = { $lte: maxPaginas };
 
-      const livrosResultado = await livros.find(filtro);
+      if(autor){
+        const findAutor = await autores.findOne({ nome: { $regex: autor, $options: "i" } });
+        if(findAutor) filtro.autor = findAutor?._id;
+      }
+
+      const livrosResultado = await livros.find(filtro).populate("autor");
       res.status(200).send(livrosResultado);
     }catch(erro){
       next(erro);
