@@ -2,14 +2,14 @@ import livros from "../models/Livro.js";
 
 class LivroController {
     static getAllLivros = (req, res) => {
-        livros.find((err, livros) => {
+        livros.find().populate('autor').exec((err, livros) => {
             res.status(200).json(livros)
         })
     }
 
     static getLivroById = (req, res) => {
         const { id } = req?.params;
-        livros.findById(id, (err, livro) => {
+        livros.findById(id).populate('autor', 'nome').exec((err, livro) => {
             if(err){
                 res.status(400).send({ message: `Livro não existente.` })
             }else{
@@ -49,6 +49,18 @@ class LivroController {
                 res.status(200).send({ message: `Livro deletado com sucesso.` })
             }
         })
+    }
+
+    static getLivrosByEditora = (req, res) => {
+        const { editora } = req.query;
+        livros.find({ 'editora': editora }, {}, (err, livros) => {
+            if(err){
+                res.status(500).send({ message: `${err.message} - falha ao encontrar livros.` })
+            }else{
+                res.status(200).json(livros)
+            }
+        })
+
     }
 }
 
