@@ -68,8 +68,8 @@ class LivroController {
       const { editora, titulo } = req.query;
       const filtro = {};
 
-      if(editora) filtro.editora = editora;
-      if(titulo) filtro.titulo = titulo;
+      if(editora) filtro.editora = { $regex: editora, $options: "i" };
+      if(titulo) filtro.titulo = { $regex: titulo, $options: "i" };
 
       const livrosResultado = await livros.find(filtro);
       res.status(200).send(livrosResultado);
