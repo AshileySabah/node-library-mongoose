@@ -5,11 +5,14 @@ import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 class LivroController {
   static getAllLivros = async (req, res, next) => {
     try{
-      let { page = 1, size = 5 } = req.query;
+      let { page = 1, size = 5 , campoOrdenacao = "_id", ordem = -1} = req.query;
       page = Number(page);
       size = Number(size);
+      ordem = Number(ordem);
+
       if(page > 0 && size > 0){
         const livrosResultado = await livros.find()
+          .sort({ [campoOrdenacao]: ordem })
           .skip((page - 1) * size).limit(size)
           .populate("autor").exec();
         res.status(200).json(livrosResultado);
