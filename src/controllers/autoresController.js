@@ -4,8 +4,9 @@ import NaoEncontrado from "../erros/NaoEncontrado.js";
 class AutorController {
   static getAllAutores = async (req, res, next) => {
     try{
-      const autoresResultado = await autores.find();
-      res.status(200).json(autoresResultado);
+      const autoresResultado = autores.find();
+      req.listToPaginate = autoresResultado;
+      next();
     }catch(erro){
       next(erro);
     }
